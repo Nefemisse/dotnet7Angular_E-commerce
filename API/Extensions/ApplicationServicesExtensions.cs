@@ -25,6 +25,7 @@ namespace API.Extensions
             {
                 options.InvalidModelStateResponseFactory = ActionContext =>
                 {
+                    // Message to display inside the errors message
                     var errors = ActionContext.ModelState
                         .Where(e => e.Value.Errors.Count > 0)
                         .SelectMany(x => x.Value.Errors)
@@ -36,6 +37,14 @@ namespace API.Extensions
                     };
                     return new BadRequestObjectResult(errorResponse);
                 };
+            });
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
             });
 
             return services;
